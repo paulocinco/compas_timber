@@ -22,14 +22,14 @@ class BTLxDoubleCut(object):
 
     def __init__(self, param_dict, joint_name=None, **kwargs):
         self.apply_process = True
-        self.reference_plane_id = ""
+        self.reference_plane_id = param_dict["ReferencePlaneID"]
         self.orientation = "start"
-        self.start_x = 0.0
-        self.start_y = 0.0
-        self.angle1 = 45.0
-        self.inclination1 = 90.0
-        self.angle2 = 90.0
-        self.inclination2 = 90.0
+        self.start_x = param_dict["StartX"]
+        self.start_y = param_dict["StartY"]
+        self.angle1 = param_dict["Angle1"]
+        self.inclination1 = param_dict["Inclination1"]
+        self.angle2 = param_dict["Angle2"]
+        self.inclination2 = param_dict["Inclination2"]
 
         for key, value in param_dict.items():
             setattr(self, key, value)
@@ -61,13 +61,13 @@ class BTLxDoubleCut(object):
             """the following attributes are specific to Lap"""
             od = OrderedDict(
                 [
-                    ("Orientation", self.orientation),
-                    ("StartX", self.start_x),
-                    ("StartY", self.start_y),
-                    ("Angle1", self.angle1),
-                    ("Inclination1", self.inclination1),
-                    ("Angle2", self.angle2),
-                    ("Inclination2", self.inclination2),
+                    ("Orientation", str(self.orientation)),
+                    ("StartX", "{:.{prec}f}".format(self.start_x, prec=BTLx.POINT_PRECISION)),
+                    ("StartY", "{:.{prec}f}".format(self.start_y, prec=BTLx.POINT_PRECISION)),
+                    ("Angle1", "{:.{prec}f}".format(self.angle1, prec=BTLx.ANGLE_PRECISION)),
+                    ("Inclination1", "{:.{prec}f}".format(self.inclination1, prec=BTLx.ANGLE_PRECISION)),
+                    ("Angle2", "{:.{prec}f}".format(self.angle2, prec=BTLx.ANGLE_PRECISION)),
+                    ("Inclination2", "{:.{prec}f}".format(self.inclination2, prec=BTLx.ANGLE_PRECISION))
                 ]
             )
             print("param dict", od)
@@ -78,5 +78,5 @@ class BTLxDoubleCut(object):
     @classmethod
     def create_process(cls, param_dict, joint_name=None, **kwargs):
         """Creates a lap process from a dictionary of parameters."""
-        lap = BTLxLap(param_dict, joint_name, **kwargs)
-        return BTLxProcess(BTLxLap.PROCESS_TYPE, lap.header_attributes, lap.process_params)
+        lap = BTLxDoubleCut(param_dict, joint_name, **kwargs)
+        return BTLxProcess(BTLxDoubleCut.PROCESS_TYPE, lap.header_attributes, lap.process_params)
