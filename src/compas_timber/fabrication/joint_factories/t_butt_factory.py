@@ -26,10 +26,12 @@ class TButtFactory(object):
         for i, face in enumerate(main_part.beam.faces):
             angles_dict[i] = (face.normal.angle(intersect_vec))
         ref_frame_id = min(angles_dict, key=angles_dict.get)
-        ref_frame = main_part.beam.faces[ref_frame_id]
+        # ref_frame = main_part.beam.faces[ref_frame_id]
+        ref_frame = main_part.reference_surfaces[str(ref_frame_id)]
 
         start_point = Point(*intersection_plane_plane_plane(plane1, plane2, Plane.from_frame(ref_frame)))
         start_point.transform(Transformation.from_frame_to_frame(ref_frame, Frame.worldXY()))
+        print(start_point)
         StartX, StartY = start_point[0], start_point[1]
 
         intersect_vec1 = Vector.from_start_end(*intersection_plane_plane(plane1, Plane.from_frame(ref_frame)))
