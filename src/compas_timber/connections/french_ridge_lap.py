@@ -115,4 +115,5 @@ class FrenchRidgeLapJoint(Joint):
             indices.append(2)
         else:
             raise (BeamJoinningError("part not aligned with corner normal, no French Ridge Lap possible"))
+
         self.reference_face_indices = {str(self.beam_a.key): indices[0], str(self.beam_b.key): indices[1]}
