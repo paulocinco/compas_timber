@@ -23,7 +23,7 @@ class BTLxDoubleCut(object):
     def __init__(self, param_dict, joint_name=None, **kwargs):
         self.apply_process = True
         self.reference_plane_id = param_dict["ReferencePlaneID"]
-        self.orientation = "start"
+        self.orientation = param_dict["Orientation"]
         self.start_x = param_dict["StartX"]
         self.start_y = param_dict["StartY"]
         self.angle1 = param_dict["Angle1"]

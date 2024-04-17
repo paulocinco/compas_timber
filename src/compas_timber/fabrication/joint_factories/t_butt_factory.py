@@ -18,6 +18,9 @@ class TButtFactory(object):
     def calc_params_birdsmouth(joint, main_part, cross_part):
         face_dict = joint._beam_side_incidence(main_part.beam, cross_part.beam, ignore_ends=True)
         face_dict = sorted(face_dict, key=face_dict.get)
+
+
+
         frame1, frame2 = cross_part.beam.faces[face_dict[0]], cross_part.beam.faces[face_dict[1]]
         plane1, plane2 = Plane.from_frame(frame1), Plane.from_frame(frame2)
         intersect_vec = Vector.from_start_end(*intersection_plane_plane(plane2, plane1))
@@ -26,26 +29,41 @@ class TButtFactory(object):
         for i, face in enumerate(main_part.beam.faces):
             angles_dict[i] = (face.normal.angle(intersect_vec))
         ref_frame_id = min(angles_dict, key=angles_dict.get)
-        # ref_frame = main_part.beam.faces[ref_frame_id]
-        ref_frame = main_part.reference_surfaces[str(ref_frame_id)]
+        ref_frame = main_part.reference_surface_planes(ref_frame_id+1)
+
+        dot_frame1 = plane1.normal.dot(ref_frame.yaxis)
+        if dot_frame1 > 0:
+            plane1, plane2 = plane2, plane1
 
         start_point = Point(*intersection_plane_plane_plane(plane1, plane2, Plane.from_frame(ref_frame)))
         start_point.transform(Transformation.from_frame_to_frame(ref_frame, Frame.worldXY()))
-        print(start_point)
         StartX, StartY = start_point[0], start_point[1]
 
         intersect_vec1 = Vector.from_start_end(*intersection_plane_plane(plane1, Plane.from_frame(ref_frame)))
         intersect_vec2 = Vector.from_start_end(*intersection_plane_plane(plane2, Plane.from_frame(ref_frame)))
-        Angle2 = math.degrees(intersect_vec1.angle(ref_frame.xaxis))
-        Angle1 = math.degrees(intersect_vec2.angle(ref_frame.xaxis))
 
-        normal_plane1 = Plane.from_frame(frame1).normal
-        normal_plane2 = Plane.from_frame(frame2).normal
-        Inclination1 = math.degrees(normal_plane1.angle(ref_frame.zaxis))
-        Inclination2 = math.degrees(normal_plane2.angle(ref_frame.zaxis))
+
+        dot_2 = math.degrees(intersect_vec1.dot(ref_frame.yaxis))
+        if dot_2 < 0:
+            intersect_vec1 = -intersect_vec1
+
+        dot_1 = math.degrees(intersect_vec2.dot(ref_frame.yaxis))
+        if dot_1 < 0:
+            intersect_vec2 = -intersect_vec2
+
+        if joint.ends[str(main_part.key)] == "start":
+            reference_frame = ref_frame.xaxis
+        else:
+            reference_frame = -ref_frame.xaxis
+
+        Angle1 = math.degrees(intersect_vec1.angle(reference_frame))
+        Angle2 = math.degrees(intersect_vec2.angle(reference_frame))
+
+        Inclination1 = math.degrees(plane1.normal.angle(ref_frame.zaxis))
+        Inclination2 = math.degrees(plane2.normal.angle(ref_frame.zaxis))
 
         return {
-            "Orientation": "start",
+            "Orientation": joint.ends[str(main_part.key)],
             "StartX": StartX,
             "StartY": StartY,
             "Angle1": Angle1,
