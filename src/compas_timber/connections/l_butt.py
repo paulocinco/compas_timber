@@ -49,18 +49,13 @@ class LButtJoint(ButtJoint):
         main_beam=None,
         cross_beam=None,
         mill_depth=0,
-        small_beam_butts=False,
         modify_cross=True,
         reject_i=False,
         **kwargs
     ):
-        if small_beam_butts and main_beam and cross_beam:
-            if main_beam.width * main_beam.height > cross_beam.width * cross_beam.height:
-                main_beam, cross_beam = cross_beam, main_beam
 
         super(LButtJoint, self).__init__(main_beam, cross_beam, mill_depth, **kwargs)
         self.modify_cross = modify_cross
-        self.small_beam_butts = small_beam_butts
         self.reject_i = reject_i
 
     @property

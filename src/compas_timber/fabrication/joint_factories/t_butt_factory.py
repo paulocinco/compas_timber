@@ -5,7 +5,7 @@ from compas_timber.fabrication import BTLxDoubleCut
 from compas_timber.fabrication.btlx_processes.btlxlap import BTLxLap
 from compas.geometry import intersection_plane_plane, intersection_plane_plane_plane, Vector, Plane, Frame, Transformation, Point
 import math
-from compas_timber.fabrication.btlx_processes.lap import BTLxLap
+# from compas_timber.fabrication.btlx_processes.lap import BTLxLap
 
 
 class TButtFactory(object):
@@ -34,7 +34,10 @@ class TButtFactory(object):
         face_dict = joint._beam_side_incidence(main_part.beam, cross_part.beam, ignore_ends=True)
         face_dict = sorted(face_dict, key=face_dict.get)
 
-        frame1, frame2 = cross_part.beam.faces[face_dict[0]], cross_part.beam.faces[face_dict[1]]
+        # frame1 = joint.get_main_cutting_plane()[0]
+        frame1 = cross_part.beam.faces[face_dict[0]]
+        frame2 = cross_part.beam.faces[face_dict[1]]
+
         plane1, plane2 = Plane.from_frame(frame1), Plane.from_frame(frame2)
         intersect_vec = Vector.from_start_end(*intersection_plane_plane(plane2, plane1))
 

@@ -11,6 +11,7 @@ from compas.geometry import Line
 from compas.geometry import Polyhedron
 from compas.geometry import Point
 from compas.geometry import angle_vectors_signed
+from .joint import BeamJoinningError
 from .joint import Joint
 
 
@@ -43,21 +44,25 @@ class ButtJoint(Joint):
 
     """
 
-    def __init__(self, main_beam=None, cross_beam=None, mill_depth=0, birdsmouth = False, **kwargs):
+    def __init__(self, main_beam=None, cross_beam=None, mill_depth=0, small_beam_butts=False, birdsmouth = False, **kwargs):
         super(ButtJoint, self).__init__(**kwargs)
         self.main_beam = main_beam
         self.cross_beam = cross_beam
         self.main_beam_key = main_beam.key if main_beam else None
         self.cross_beam_key = cross_beam.key if cross_beam else None
         self.mill_depth = mill_depth
-        self.modify_cross = modify_cross
         self.small_beam_butts = small_beam_butts
-        self.reject_i = reject_i
         self.btlx_params_main = {}
         self.btlx_params_cross = {}
         self.birdsmouth = birdsmouth
         self.features = []
         self.test = []
+
+        if small_beam_butts and main_beam and cross_beam:
+            if main_beam.width * main_beam.height > cross_beam.width * cross_beam.height:
+                main_beam, cross_beam = cross_beam, main_beam
+
+        self.small_beam_butts = small_beam_butts
 
     @property
     def __data__(self):
