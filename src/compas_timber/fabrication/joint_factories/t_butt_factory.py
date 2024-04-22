@@ -5,6 +5,7 @@ from compas_timber.fabrication import BTLxDoubleCut
 from compas_timber.fabrication.btlx_processes.btlxlap import BTLxLap
 from compas.geometry import intersection_plane_plane, intersection_plane_plane_plane, Vector, Plane, Frame, Transformation, Point
 import math
+from compas_timber.fabrication.btlx_processes.lap import BTLxLap
 
 
 class TButtFactory(object):
