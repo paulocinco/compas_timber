@@ -16,10 +16,22 @@ class TButtFactory(object):
 
     @staticmethod
     def calc_params_birdsmouth(joint, main_part, cross_part):
+        """
+        Calculate the parameters for a birdsmouth joint.
+
+        Parameters:
+        ----------
+            joint (object): The joint object.
+            main_part (object): The main part object.
+            cross_part (object): The cross part object.
+
+        Returns:
+        ----------
+            dict: A dictionary containing the calculated parameters for the birdsmouth joint
+
+        """
         face_dict = joint._beam_side_incidence(main_part.beam, cross_part.beam, ignore_ends=True)
         face_dict = sorted(face_dict, key=face_dict.get)
-
-
 
         frame1, frame2 = cross_part.beam.faces[face_dict[0]], cross_part.beam.faces[face_dict[1]]
         plane1, plane2 = Plane.from_frame(frame1), Plane.from_frame(frame2)
@@ -41,7 +53,6 @@ class TButtFactory(object):
 
         intersect_vec1 = Vector.from_start_end(*intersection_plane_plane(plane1, Plane.from_frame(ref_frame)))
         intersect_vec2 = Vector.from_start_end(*intersection_plane_plane(plane2, Plane.from_frame(ref_frame)))
-
 
         dot_2 = math.degrees(intersect_vec1.dot(ref_frame.yaxis))
         if dot_2 < 0:
